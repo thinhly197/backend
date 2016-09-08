@@ -74,3 +74,4 @@
         # considered to have leaked
         leakDetectionThreshold = null
       }
+drools, springboot
