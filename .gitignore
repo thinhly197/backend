@@ -1,0 +1,25 @@
+.gradle
+.idea
+.DS_Store
+.classpath
+.project
+.settings
+.gradle
+
+build/
+bin/
+logs/
+log/
+build/
+out/
+
+*.iml
+Main.java
+test.jpg
+*.drl
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar

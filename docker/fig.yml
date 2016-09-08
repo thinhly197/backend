@@ -1,0 +1,16 @@
+tomcat:
+  build: .
+  links:
+    - mysql:db
+  ports:
+    - "8000:8000"
+
+mysql:
+  image: mysql:9.3
+  ports:
+    - "3306:3306"
+
+nginx:
+  biuld: .
+  ports:
+    - "80:80"

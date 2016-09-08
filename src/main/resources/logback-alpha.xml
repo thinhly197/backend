@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <timestamp key="year" datePattern="yyyy"/>
+    <timestamp key="month" datePattern="MM"/>
+    <timestamp key="day" datePattern="dd"/>
+
+    <property name="logRootPath" value="/data/log/cmp"/>
+    <property name="pattern" value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] %-4level %4X{logType} %4X{component} %4X{req.remoteHost} %4X{correlation} %4X{anonymous} %4X{username}    %m%n"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logRootPath}/application.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logRootPath}/${year}/${month}/${day}/application.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+            <maxHistory>92</maxHistory>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <charset>utf-8</charset>
+            <Pattern>${pattern}</Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
+    <logger name="javax.activation" level="OFF"/>
+    <logger name="javax.mail" level="OFF"/>
+    <logger name="javax.net" level="OFF"/>
+    <logger name="sun.net" level="OFF"/>
+    <logger name="javax.xml.bind" level="OFF"/>
+    <logger name="ch.qos.logback" level="OFF"/>
+    <logger name="com.codahale.metrics" level="OFF"/>
+    <logger name="com.ryantenney" level="OFF"/>
+    <logger name="com.sun.xml.internal.bind" level="OFF"/>
+    <logger name="com.zaxxer" level="OFF"/>
+    <logger name="io.undertow" level="OFF"/>
+    <logger name="net.sf.ehcache" level="OFF"/>
+    <logger name="org.apache" level="OFF"/>
+    <logger name="org.bson" level="OFF"/>
+    <logger name="sun.rmi.transport" level="OFF"/>
+    <logger name="org.jboss" level="OFF"/>
+    <logger name="org.thymeleaf" level="OFF"/>
+    <logger name="org.xnio" level="OFF"/>
+    <logger name="org.hibernate.validator" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="org.springframework.web" level="ERROR"/>
+    <logger name="org.springframework.security" level="ERROR"/>
+    <logger name="org.springframework.cache" level="ERROR"/>
+    <logger name="com.mangofactory.swagger" level="ERROR"/>
+    <logger name="com.wordnik.swagger" level="ERROR"/>
+    <logger name="liquibase" level="ERROR"/>
+    <logger name="springfox" level="ERROR"/>
+    <logger name="org.drools" level="ERROR"/>
+    <logger name="com.amazonaws" level="ERROR"/>
+
+    <logger name="com.ascend" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="dailyRollingFileAppender"/>
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>

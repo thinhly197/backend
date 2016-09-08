@@ -1,0 +1,465 @@
+# Core
+spring:
+  application:
+    name: campaign-api
+    version: 1.0.2
+  profiles.active: local
+  main:
+    web-environment: true
+
+  jackson:
+    property-naming-strategy: CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+
+# Custom
+swagger:
+    title: Campaign Management API
+    description: campaign management system API
+    version: 1.0.0
+    contact: Stark Team
+    termsOfServiceUrl:
+    license:
+    licenseUrl:
+
+drools:
+  drl.folder: rules/
+  promotionITM.filename: promotionsITM.drl
+  promotionWM.filename: promotionsWM.drl
+  promotionForProduct.filename: promotionsForProductITM.drl
+  promotionForProductWM.filename: promotionsForProductWM.drl
+  bundlePromotionForProducts.filename: bundlePromotionForProductsITM.drl
+  bundlePromotionForProductsWM.filename: bundlePromotionForProductsWM.drl
+  mnpPromotionForProducts.filename: mnpPromotionForProductsITM.drl
+  freebiePromotionForProducts.filename: freebiePromotionForProductsITM.drl
+
+multipart:
+  maxFileSize: 100MB
+  maxRequestSize: 100MB
+
+
+---
+spring:
+  profiles: local
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://localhost:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign
+    password: campaign@dm1n
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://alpha-apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 300000
+    buildPromotion: 600000
+
+  policies:
+    0: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-0.png?v=9289de82
+    1: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+---
+spring:
+  profiles: test
+
+  datasource:
+    dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+    url: jdbc:h2:mem:campaign_db;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: H2
+    openInView: false
+    show_sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: true
+
+  external.url:
+    pds: http://alpha-apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 300000
+    buildPromotion: 600000
+
+  policies:
+    0: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-0.png?v=9289de82
+    1: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+---
+spring:
+  profiles: dev
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://localhost:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign
+    password: campaign@dm1n
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://alpha-apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 30000
+    buildPromotion: 600000
+
+  policies:
+    0: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-0.png?v=9289de82
+    1: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+  redis:
+    host: alpha-elasticache-cmp-rw.wemall-dev.com
+    port: 6379
+    key:
+      promotionTM: dev_promotion_tm
+      promotionWM: dev_promotion_wm
+      promotionProductTM: dev_promotion_product_tm
+      promotionProductWM: dev_promotion_product_wm
+      bundlePromotionProductTM: dev_bundle_promotion_product_tm
+      bundlePromotionProductWM: dev_bundle_promotion_product_wm
+      mnpPromotionProductTM: prod_mnp_promotion_product_tm
+      freebiePromotionProductTM: prod_freebie_promotion_product_tm
+
+
+---
+spring:
+  profiles: alpha
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://alpha-campaigndb-rw.wemall-dev.com:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign_app
+    password: root
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://alpha-apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://alpha-apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 30000
+    buildPromotion: 600000
+
+  policies:
+    0: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-0.png?v=9289de82
+    1: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //alpha-cdn.wemall-dev.com/th/cmp/images-flashsahle-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+
+  redis:
+    host: alpha-elasticache-cmp-rw.wemall-dev.com
+    port: 6379
+    key:
+      promotionTM: alpha_promotion_tm
+      promotionWM: alpha_promotion_wm
+      promotionProductTM: alpha_promotion_product_tm
+      promotionProductWM: alpha_promotion_product_wm
+      bundlePromotionProductTM: alpha_bundle_promotion_product_tm
+      bundlePromotionProductWM: alpha_bundle_promotion_product_wm
+      mnpPromotionProductTM: prod_mnp_promotion_product_tm
+      freebiePromotionProductTM: prod_freebie_promotion_product_tm
+
+
+---
+spring:
+  profiles: staging
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://campaigndb-rw.wemall-dev.com:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign_rw
+    password: cftyGv548
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 30000
+    buildPromotion: 600000
+
+  policies:
+    0: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    1: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+  redis:
+    host: elasticache-cmp-rw.wemall-dev.com
+    port: 6379
+    key:
+      promotionTM: stg_promotion_tm
+      promotionWM: stg_promotion_wm
+      promotionProductTM: stg_promotion_product_tm
+      promotionProductWM: stg_promotion_product_wm
+      bundlePromotionProductTM: stg_bundle_promotion_product_tm
+      bundlePromotionProductWM: stg_bundle_promotion_product_wm
+      mnpPromotionProductTM: prod_mnp_promotion_product_tm
+      freebiePromotionProductTM: prod_freebie_promotion_product_tm
+
+---
+spring:
+  profiles: beta
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://campaigndb-rw.wemall-dev.com:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign_rw
+    password: cftyGv548
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://beta-apis-gateway.wemall-dev.com/pds/v2/variants/{variant}
+    pricing: http://beta-apis-gateway.wemall-dev.com/prc/v1/prices/{variant}?system=true
+    trigger: http://beta-apis-gateway.wemall-dev.com/prc/v1/prices/promotion/
+    general: http://beta-alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 30000
+    buildPromotion: 600000
+
+  policies:
+    0: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    1: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //cdn.wemall-dev.com/th/cmp/images-flashsale-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+  redis:
+    host: elasticache-cmp-rw.wemall-dev.com
+    port: 6379
+    key:
+      promotionTM: stg_promotion_tm
+      promotionWM: stg_promotion_wm
+      promotionProductTM: stg_promotion_product_tm
+      promotionProductWM: stg_promotion_product_wm
+      bundlePromotionProductTM: stg_bundle_promotion_product_tm
+      bundlePromotionProductWM: stg_bundle_promotion_product_wm
+      mnpPromotionProductTM: prod_mnp_promotion_product_tm
+      freebiePromotionProductTM: prod_freebie_promotion_product_tm
+
+---
+spring:
+  profiles: production
+
+  datasource:
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    url: jdbc:mysql://campaigndb-rw.wemall.com:3306/campaign_db?useUnicode=true&characterEncoding=utf8
+    username: campaign_rw
+    password: ygvbhuRfv23
+    poolName: CampaignHikariCP
+    maximumPoolSize: 20
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: MYSQL
+    openInView: false
+    show_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+
+  external.url:
+    pds: http://products-api.wemall.com:8080/v2/variants/{variant}
+    pricing: http://pricing-api.wemall.com:8080/api/v1/prices/{variant}?system=true
+    trigger: http://pricing-api.wemall.com:8080/api/v1/prices/promotion/
+    general: http://alpha-apis-gateway.wemall-dev.com/gen-adt/v1/general/variants?ids={variant}
+
+  fixedRate:
+    milliseconds: 30000
+    buildPromotion: 600000
+
+  policies:
+    0: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    1: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-1.jpg?v=75a05f82
+    2: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-2.jpg?v=0916c8d9
+    3: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-3.jpg?v=91393fc1
+    4: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-4.jpg?v=5c925662
+    5: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-5.jpg?v=4557fd17
+    6: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-6.jpg?v=a38e2eac
+    7: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-7.jpg?v=9b5dd4ca
+    8: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-8.jpg?v=013bbc2c
+    9: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-9.jpg?v=b8607313
+    10: //cdn.wemall.com/th/cmp/images-flashsale-policy/wow-1item-banner-10.jpg?v=52f612f4
+
+  redis:
+    host: elasticache-cmp-rw.wemall.com
+    port: 6379
+    key:
+      promotionTM: prod_promotion_tm
+      promotionWM: prod_promotion_wm
+      promotionProductTM: prod_promotion_product_tm
+      promotionProductWM: prod_promotion_product_wm
+      bundlePromotionProductTM: prod_bundle_promotion_product_tm
+      bundlePromotionProductWM: prod_bundle_promotion_product_wm
+      mnpPromotionProductTM: prod_mnp_promotion_product_tm
+      freebiePromotionProductTM: prod_freebie_promotion_product_tm
+

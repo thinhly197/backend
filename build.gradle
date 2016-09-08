@@ -1,0 +1,152 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://repository.jboss.org/nexus/content/groups/public-jboss' }
+        maven { url 'http://alpha-artifactory.wemall-dev.com/artifactory/libs-snapshot' }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'checkstyle'
+apply plugin: 'idea'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+apply plugin: 'pmd'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+
+mainClassName = "com.ascend.campaign.Application"
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    description = "javac: ignore processor hints, keep all other hints"
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.compilerArgs += ["-Xlint:all,-processing"]
+}
+
+checkstyle {
+    toolVersion = "6.7"
+    configFile = new File(rootDir, "config/checkstyle/google_checkstyle.xml")
+}
+
+pmd {
+    toolVersion = "5.2.3"
+}
+
+war {
+    baseName = 'campaigns-ws'
+    version = '1.0.1'
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}
+
+jacoco {
+    toolVersion = '0.7.1.201405082137'
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+jacocoTestReport {
+    group = 'Reporting'
+    description = 'Generate Jacoco coverage reports after running tests.'
+
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/jacoco/html"
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['com/ascend/campaign/configs/**',
+                              'com/ascend/campaign/constants/**',
+                              'com/ascend/campaign/entities/**',
+                              'com/ascend/campaign/models/**',
+                              'com/ascend/campaign/exceptions/**',
+                              'com/ascend/campaign/utils/KieUtil*',
+                              'com/ascend/campaign/utils/CalculationUtil*',
+                              'com/ascend/campaign/utils/PromotionUtil*',
+                              'com/ascend/campaign/utils/CodeGenerateUtil*',
+                              'com/ascend/campaign/utils/GroupCartUtil*',
+                              'com/ascend/campaign/utils/DrlUtil*',
+                              'com/ascend/campaign/Application*',
+                              'com/ascend/campaign/Main*',
+                              'com/ascend/campaign/validators*',
+                              'com/ascend/campaign/services/ConfigurationService*',
+                              'com/ascend/campaign/services/ExternalService*',
+                              'com/ascend/campaign/services/DroolsService*',
+                              'com/ascend/campaign/services/RedisService*',
+                              'com/ascend/campaign/services/ScheduledTask*',
+                              'com/ascend/campaign/services/FileService*',
+                              'com/ascend/campaign/services/MigrationService*',
+                              'com/ascend/campaign/services/PendingScheduled*',
+                              'com/ascend/campaign/controllers/StaticController*',
+                              'com/ascend/campaign/controllers/GlobalControllerExceptionHandler*'
+                    ])
+        })
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://repository.jboss.org/nexus/content/groups/public-jboss' }
+    maven { url 'http://alpha-artifactory.wemall-dev.com/artifactory/libs-snapshot' }
+}
+
+[compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:-serial", "-Xlint:deprecation"]
+
+configurations {
+    testCompile.exclude group: "com.wemall.aad.auth"
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-redis"
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile "com.amazonaws:aws-java-sdk-cloudwatchmetrics:$cloudwatchVersion"
+    compile "com.amazonaws:aws-java-sdk-cloudwatch:$cloudwatchVersion"
+    compile "com.codahale.metrics:metrics-core:$metricsVersion"
+    compile "com.h2database:h2"
+    compile "com.wemall.aad.auth:wemall-auth:$authVersion"
+    compile "com.univocity:univocity-parsers:$csvVersion"
+    compile("com.zaxxer:HikariCP") {
+        exclude(module: 'tools')
+    }
+    compile "commons-lang:commons-lang:$commonLangVersion"
+    compile "commons-collections:commons-collections"
+    compile "io.springfox:springfox-swagger2:$swaggerVersion"
+    compile "io.springfox:springfox-swagger-ui:$swaggerVersion"
+    compile "mysql:mysql-connector-java"
+    compile "org.antlr:ST4:$st4Version"
+    compile "org.drools:drools-compiler:$kieVersion"
+    compile "org.hibernate:hibernate-envers"
+    compile "org.kie:kie-api:$kieVersion"
+    compile "org.projectlombok:lombok:$lombokVersion"
+
+    providedRuntime "org.springframework.boot:spring-boot-starter-tomcat"
+
+    testCompile "com.jayway.jsonpath:json-path"
+    testCompile "junit:junit"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}

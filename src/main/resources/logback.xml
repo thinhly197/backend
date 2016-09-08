@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <property name="pattern" value="[%d{HH:mm:ss.SSS}] - %-4level: [%logger{0}.%method:%line] - %m%n"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
+    <logger name="javax.activation" level="WARN"/>
+    <logger name="javax.mail" level="WARN"/>
+    <logger name="javax.net" level="WARN"/>
+    <logger name="sun.net" level="WARN"/>
+    <logger name="javax.xml.bind" level="WARN"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="com.codahale.metrics" level="WARN"/>
+    <logger name="com.ryantenney" level="WARN"/>
+    <logger name="com.sun.xml.internal.bind" level="WARN"/>
+    <logger name="com.zaxxer" level="WARN"/>
+    <logger name="io.undertow" level="WARN"/>
+    <logger name="net.sf.ehcache" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.bson" level="WARN"/>
+    <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="org.jboss" level="WARN"/>
+    <logger name="org.thymeleaf" level="WARN"/>
+    <logger name="org.xnio" level="WARN"/>
+    <logger name="org.hibernate.validator" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.cache" level="WARN"/>
+    <logger name="com.mangofactory.swagger" level="WARN"/>
+    <logger name="com.wordnik.swagger" level="WARN"/>
+    <logger name="liquibase" level="WARN"/>
+    <logger name="springfox" level="WARN"/>
+    <logger name="org.drools" level="WARN"/>
+    <logger name="com.amazonaws" level="WARN"/>
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>

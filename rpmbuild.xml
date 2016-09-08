@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="campaign-api" default="rpm" basedir=".">
+
+<property name="build.dir"    value="${basedir}/build"/>
+<property name="version"      value="1.0.1"/>
+<property name="release"      value="0"/>
+<property name="buildarch"    value="ppc64-ibm-AIX7.1"/>
+<property name="buildparams"  value="--define &quot;arch ${arch}&quot; --define &quot;version ${version}&quot; --define &quot;release ${release}&quot;"/>
+
+<target name="clean">
+    <delete dir="${build.dir}" />
+</target>
+
+<target name="rpm" description="Compile single binary rpm by spec file">
+
+<!-- Create directories -->
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.dir}/BUILD"/>
+    <mkdir dir="${build.dir}/RPMS"/>
+    <mkdir dir="${build.dir}/SOURCES"/>
+    <mkdir dir="${build.dir}/SPECS"/>
+    <mkdir dir="${build.dir}/SRPMS"/>
+
+<!-- copy spec files -->
+    <copy todir="${build.dir}/SPECS" preservelastmodified="true" failonerror="true">
+        <fileset dir="${basedir}" includes="*.spec"/>
+    </copy>
+
+<!-- copy tar.gz files -->
+    <copy todir="${build.dir}/SOURCES" preservelastmodified="true" failonerror="true">
+        <fileset dir="${basedir}/target" includes="*.war"/>
+        <fileset dir="${basedir}/target" includes="*.txt"/>
+    </copy>
+
+    <rpm
+        specFile="campaign-api.spec"
+        topDir="build"
+        cleanBuildDir="false"
+        removeSpec="false"
+        removeSource="false"
+        command = "-bb --target ${buildarch} ${buildparams}"
+        failOnError="false"
+    />
+</target>
+</project>
